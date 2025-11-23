@@ -62,7 +62,9 @@ export function SavingsCalculatorPage() {
     selectedProduct,
     input.targetAmount,
     input.selectedTerm
-  ); 
+  );
+
+  const recommendedProducts = calculations.getRecommendedProducts(products); 
 
   return (
     <>
@@ -179,11 +181,42 @@ export function SavingsCalculatorPage() {
                 }
               />
 
-              <Spacing size={40} />
+              <Spacing size={8} />
+              <Border height={16} />
+              <Spacing size={8} />
             </>
           ) : (
-            <ListRow contents={<ListRow.Texts type="1RowTypeA" top="상품을 선택해주세요." />} />
+            <>
+              <ListRow contents={<ListRow.Texts type="1RowTypeA" top="상품을 선택해주세요." />} />
+              <Spacing size={8} />
+              <Border height={16} />
+              <Spacing size={8} />
+            </>
           )}
+
+          <ListHeader title={<ListHeader.TitleParagraph fontWeight="bold">추천 상품 목록</ListHeader.TitleParagraph>} />
+          <Spacing size={12} />
+
+          {recommendedProducts.map((product) => (
+            <ListRow
+              key={product.id}
+              contents={
+                <ListRow.Texts
+                  type="3RowTypeA"
+                  top={product.name}
+                  topProps={{ fontSize: 16, fontWeight: 'bold', color: colors.grey900 }}
+                  middle={`연 이자율: ${product.annualRate}%`}
+                  middleProps={{ fontSize: 14, color: colors.blue600, fontWeight: 'medium' }}
+                  bottom={`${utils.formatMoney(product.minMonthlyAmount)}원 ~ ${utils.formatMoney(product.maxMonthlyAmount)}원 | ${product.availableTerms}개월`}
+                  bottomProps={{ fontSize: 13, color: colors.grey600 }}
+                />
+              }
+              right={selectedProductId === product.id ? <Assets.Icon name="icon-check-circle-green" /> : undefined}
+              onClick={() => actions.selectProduct(product.id)}
+            />
+          ))}
+
+          <Spacing size={40} />
         </>
       )}
 

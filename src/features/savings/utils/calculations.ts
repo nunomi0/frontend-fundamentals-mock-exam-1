@@ -1,5 +1,14 @@
 import { SavingsProduct } from '../types/SavingsProduct';
 
+export function getRecommendedProducts(
+  products: SavingsProduct[],
+  count: number = 2
+): SavingsProduct[] {
+  return products
+    .sort((a, b) => b.annualRate - a.annualRate)
+    .slice(0, count);
+}
+
 export function calculateExpectedProfit(
   selectedProduct: SavingsProduct | undefined,
   monthlyAmount: string,
