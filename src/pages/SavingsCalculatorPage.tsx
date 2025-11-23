@@ -15,13 +15,13 @@ import { useSavingsStore } from '../features/savings/store/useSavingsStore';
 
 export function SavingsCalculatorPage() {
   const allProducts = useSavingsStore((s) => s.products);
+  const selectedProductId = useSavingsStore((s) => s.selectedProductId);
   const input = useSavingsStore((s) => s.input);
   const actions = useSavingsStore((s) => s.actions);
   const utils = useSavingsStore((s) => s.utils);
 
   useEffect(() => {
     actions.loadProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const products = allProducts.filter((product) => {
@@ -104,7 +104,8 @@ export function SavingsCalculatorPage() {
               bottomProps={{ fontSize: 13, color: colors.grey600 }}
             />
           }
-          onClick={() => {}}
+          right={selectedProductId === product.id ? <Assets.Icon name="icon-check-circle-green" /> : undefined}
+          onClick={() => actions.selectProduct(product.id)}
         />
       ))}
 
