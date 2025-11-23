@@ -61,7 +61,15 @@ export function SavingsCalculatorPage() {
     input.selectedTerm
   );
 
-  const recommendedProducts = calculations.getRecommendedProducts(products); 
+  const recommendedProducts = calculations.getRecommendedProducts(products);
+
+  const handleProductSelect = (id: string) => {
+    if (selectedProductId === id) {
+      actions.selectProduct(null);
+    } else {
+      actions.selectProduct(id);
+    }
+  };
 
   return (
     <>
@@ -95,7 +103,7 @@ export function SavingsCalculatorPage() {
         <SavingsProductList
           products={products}
           selectedProductId={selectedProductId}
-          onSelectProduct={actions.selectProduct}
+          onSelectProduct={handleProductSelect}
           formatMoney={utils.formatMoney}
         />
       )}
@@ -108,7 +116,7 @@ export function SavingsCalculatorPage() {
           recommendedMonthly={recommendedMonthly}
           recommendedProducts={recommendedProducts}
           selectedProductId={selectedProductId}
-          onSelectProduct={actions.selectProduct}
+          onSelectProduct={handleProductSelect}
           formatMoney={utils.formatMoney}
         />
       )}

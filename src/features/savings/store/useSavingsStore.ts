@@ -14,7 +14,7 @@ interface SavingsState {
 
   actions: {
     loadProducts: () => Promise<void>;
-    selectProduct: (id: string) => void;
+    selectProduct: (id: string | null) => void;
 
     handleTargetAmount: (raw: string | React.ChangeEvent<HTMLInputElement>) => void;
     handleMonthlyAmount: (raw: string | React.ChangeEvent<HTMLInputElement>) => void;
