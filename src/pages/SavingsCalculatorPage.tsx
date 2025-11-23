@@ -14,13 +14,31 @@ import { useEffect } from 'react';
 import { useSavingsStore } from '../features/savings/store/useSavingsStore';
 
 export function SavingsCalculatorPage() {
-  const products = useSavingsStore((state) => state.products);
-  const actions = useSavingsStore((state) => state.actions);
-  const utils = useSavingsStore((state) => state.utils);
+  const allProducts = useSavingsStore((s) => s.products);
+  const input = useSavingsStore((s) => s.input);
+  const actions = useSavingsStore((s) => s.actions);
+  const utils = useSavingsStore((s) => s.utils);
 
   useEffect(() => {
     actions.loadProducts();
-  }, [actions]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const products = allProducts.filter((product) => {
+    const amount = Number(input.monthlyAmount.replace(/,/g, ''));
+    
+    if (amount > 0) {
+      if (amount < product.minMonthlyAmount || amount > product.maxMonthlyAmount) {
+        return false;
+      }
+    }
+
+    if (product.availableTerms !== input.selectedTerm) {
+      return false;
+    }
+
+    return true;
+  }); 
 
   return (
     <>
@@ -28,11 +46,32 @@ export function SavingsCalculatorPage() {
 
       <Spacing size={16} />
 
-      <TextField label="목표 금액" placeholder="목표 금액을 입력하세요" suffix="원" />
+      <TextField
+        label="목표 금액"
+        placeholder="목표 금액을 입력하세요"
+        suffix="원"
+        value={input.targetAmount}
+        onChange={actions.handleTargetAmount}
+      />
+
       <Spacing size={16} />
-      <TextField label="월 납입액" placeholder="희망 월 납입액을 입력하세요" suffix="원" />
+
+      <TextField
+        label="월 납입액"
+        placeholder="희망 월 납입액을 입력하세요"
+        suffix="원"
+        value={input.monthlyAmount}
+        onChange={actions.handleMonthlyAmount}
+      />
+
       <Spacing size={16} />
-      <SelectBottomSheet label="저축 기간" title="저축 기간을 선택해주세요" value={12} onChange={() => {}}>
+
+      <SelectBottomSheet
+        label="저축 기간"
+        title="저축 기간을 선택해주세요"
+        value={input.selectedTerm}
+        onChange={(value) => actions.setSelectedTerm(value as number)}
+      >
         <SelectBottomSheet.Option value={6}>6개월</SelectBottomSheet.Option>
         <SelectBottomSheet.Option value={12}>12개월</SelectBottomSheet.Option>
         <SelectBottomSheet.Option value={24}>24개월</SelectBottomSheet.Option>
@@ -70,7 +109,8 @@ export function SavingsCalculatorPage() {
       ))}
 
       {/* 아래는 계산 결과 탭 내용이에요. 계산 결과 탭을 구현할 때 주석을 해제해주세요. */}
-      {/* <Spacing size={8} />
+      {/*
+      <Spacing size={8} />
 
       <ListRow
         contents={
@@ -83,6 +123,7 @@ export function SavingsCalculatorPage() {
           />
         }
       />
+
       <ListRow
         contents={
           <ListRow.Texts
@@ -94,6 +135,7 @@ export function SavingsCalculatorPage() {
           />
         }
       />
+
       <ListRow
         contents={
           <ListRow.Texts
@@ -127,6 +169,7 @@ export function SavingsCalculatorPage() {
         }
         onClick={() => {}}
       />
+
       <ListRow
         contents={
           <ListRow.Texts
@@ -142,10 +185,13 @@ export function SavingsCalculatorPage() {
         onClick={() => {}}
       />
 
-      <Spacing size={40} /> */}
+      <Spacing size={40} />
+      */}
 
       {/* 아래는 사용자가 적금 상품을 선택하지 않고 계산 결과 탭을 선택했을 때 출력해주세요. */}
-      {/* <ListRow contents={<ListRow.Texts type="1RowTypeA" top="상품을 선택해주세요." />} /> */}
+      {/*
+      <ListRow contents={<ListRow.Texts type="1RowTypeA" top="상품을 선택해주세요." />} />
+      */}
     </>
   );
 }
